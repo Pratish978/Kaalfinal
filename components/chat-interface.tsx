@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react"
 import { Mic, Send, Save, ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { LoginModal } from "@/components/login-modal"
+
 import { WisdomCard } from "@/components/wisdom-card"
 import { useAuth } from "@/contexts/auth-context"
+import AuthModal from "./login-modal"
 
 // ── Types ──
 interface Message {
@@ -307,11 +308,9 @@ export function ChatInterface({ onBack }: ChatInterfaceProps) {
       </div>
 
       {/* ── Contextual Modal Portals ── */}
-      <LoginModal
-        open={showLoginModal}
-        onOpenChange={setShowLoginModal}
-        title="Would you like to save your conversations with KAAL?"
-        message="Save your progress so you can continue later."
+      <AuthModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
       />
     </div>
   )

@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/contexts/auth-context"
-import { LoginModal } from "@/components/login-modal"
+
 import { useMeditations } from "@/hooks/useMeditations"
 import Image from "next/image"
 import { X, Play, Pause, SkipBack, SkipForward } from "lucide-react"
+import AuthModal from "./login-modal"
 
 /* ═══════════════════════════════════════════
    MEDITATION PLAYER  (file 3 — full code)
@@ -354,9 +355,9 @@ export function MeditationCards() {
         </div>
       </div>
 
-      <LoginModal
-        open={showLoginModal}
-        onOpenChange={setShowLoginModal}
+      <AuthModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
         title="Unlock Premium Meditations"
         message="Sign in to access all meditation sessions, save your progress, and track your wellness journey."
       />

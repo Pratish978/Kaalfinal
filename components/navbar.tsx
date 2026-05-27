@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ArrowLeft, LogOut, User, Sparkles, Menu, X } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
-import { LoginModal } from "@/components/login-modal"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import AuthModal from "./login-modal"
 
 interface NavbarProps {
   showBackButton?: boolean
@@ -254,7 +255,7 @@ export function Navbar({ showBackButton = false, customBackAction, forceLogo = f
         />
       )}
 
-      <LoginModal open={showLoginModal} onOpenChange={setShowLoginModal} />
+      <AuthModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </>
   )
 }

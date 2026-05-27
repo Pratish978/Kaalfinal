@@ -1,211 +1,141 @@
-"use client"
+"use client";
+import React, { useState } from 'react';
+import { X, Mail, Phone, Loader2 } from 'lucide-react'; 
+import { supabase } from '@/app/utils/supabase';
 
-import { useState } from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-
-import { useAuth } from "@/contexts/auth-context"
-import { UserPreferenceModal } from "@/components/user-preference-modal"
-
-interface LoginModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  title?: string
-  message?: string
+interface AuthModalProps {
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function LoginModal({
-  open,
-  onOpenChange,
-  title = "Continue with KAAL",
-  message = "Sign in to save your conversations and continue anytime.",
-}: LoginModalProps) {
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
+  const [email, setEmail] = useState('');
+  const [showEmailInput, setShowEmailInput] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const [email, setEmail] = useState("")
-  const [emailSent, setEmailSent] = useState(false)
-  const [showPreferenceModal, setShowPreferenceModal] = useState(false)
+  if (!isOpen) return null;
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  // Function to handle Email OTP (Magic Link) login
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return alert("Please enter your email");
 
-  const { loginWithEmail, loginWithGoogle } = useAuth()
-
-  /* ---------------- GOOGLE LOGIN ---------------- */
-
-  const handleGoogleLogin = async () => {
+    setLoading(true);
     try {
-      setIsLoading(true)
-      await loginWithGoogle()
-    } catch {
-      setError("Google login failed")
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`, 
+        },
+      });
+
+      if (error) throw error;
+      setMessage("Success! Check your inbox for the login link.");
+    } catch (error: any) {
+      console.error("Login error:", error.message);
+      alert("Login failed: " + error.message);
     } finally {
-      setIsLoading(false)
+      setLoading(false);
     }
-  }
-
-  /* ---------------- EMAIL LOGIN ---------------- */
-
-  const handleSendEmail = async () => {
-
-    if (!email || !email.includes("@")) {
-      setError("Please enter a valid email")
-      return
-    }
-
-    setError("")
-    setIsLoading(true)
-
-    try {
-      await loginWithEmail(email)
-      setEmailSent(true)
-    } catch {
-      setError("Failed to send login link")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  /* ---------------- CLOSE ---------------- */
-
-  const handleClose = () => {
-    onOpenChange(false)
-    setEmail("")
-    setError("")
-    setEmailSent(false)
-  }
-
-  /* ---------------- PREF MODAL ---------------- */
-
-  const handlePreferenceModalClose = () => {
-    setShowPreferenceModal(false)
-    handleClose()
-  }
-
-  if (showPreferenceModal) {
-    return (
-      <UserPreferenceModal
-        open={showPreferenceModal}
-        onOpenChange={handlePreferenceModalClose}
-      />
-    )
-  }
-
-  /* ---------------- EMAIL SENT ---------------- */
-
-  if (emailSent) {
-    return (
-      <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md bg-card border-0 rounded-2xl">
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-xl font-semibold">
-              Check your email
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="text-center py-4">
-            <p className="text-muted-foreground mb-6">
-              We’ve sent you a secure login link.
-            </p>
-
-            <Button
-              onClick={handleSendEmail}
-              variant="outline"
-              className="rounded-full"
-            >
-              Resend Email
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  /* ---------------- LOGIN UI ---------------- */
+  };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md bg-card border-0 rounded-2xl">
-        <DialogHeader className="text-center">
-          <DialogTitle className="text-xl font-semibold">
-            {title}
-          </DialogTitle>
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+      {/* Background Overlay */}
+      <div 
+        className="absolute inset-0 bg-black/10 backdrop-blur-[1px] transition-opacity" 
+        onClick={onClose}
+      />
 
-          <p className="text-sm text-muted-foreground mt-1">
-            {message}
-          </p>
-        </DialogHeader>
+      {/* Modal Card */}
+      <div className="relative bg-white w-full max-w-md rounded-[40px] p-8 md:p-10 shadow-2xl flex flex-col items-center animate-in fade-in zoom-in duration-300">
+        
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute right-6 top-6 text-gray-400 hover:text-black transition-colors bg-transparent border-none cursor-pointer"
+        >
+          <X className="w-6 h-6" />
+        </button>
 
-        <div className="space-y-5 py-4">
+        {/* Content */}
+        <h2 className="text-2xl font-serif text-gray-800 mb-2 mt-4 text-center">
+          Save your journey with KAAL
+        </h2>
+        <p className="text-sm text-gray-500 text-center mb-10 leading-relaxed">
+          Sign in to securely store your reflections and conversations.
+        </p>
 
-          {/* GOOGLE BUTTON → PRIMARY */}
-
-          <Button
-            onClick={handleGoogleLogin}
-            disabled={isLoading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium"
+        {/* Buttons Stack */}
+        <div className="w-full flex flex-col gap-4">
+          
+          {/* Google Button - Placeholder for UI */}
+          <button 
+            type="button"
+            className="w-full bg-[#E9B96E] opacity-70 cursor-not-allowed text-white font-bold py-4 rounded-full flex items-center justify-center gap-3 border-none shadow-sm"
           >
-            Continue with Google
-          </Button>
+            <span className="text-sm">Continue with Google</span>
+          </button>
 
-          {/* DIVIDER */}
+          {/* Phone Button - Placeholder for UI */}
+          <button 
+            type="button"
+            className="w-full bg-white border border-gray-200 text-gray-300 font-medium py-4 rounded-full flex items-center justify-center gap-3 cursor-not-allowed"
+          >
+            <Phone className="w-4 h-4" />
+            <span className="text-sm">Continue with Phone</span>
+          </button>
 
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">OR</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
-          {/* EMAIL SECTION */}
-
-          <div className="space-y-3">
-
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-full"
-            />
-
-            {error && (
-              <p className="text-xs text-destructive text-center">
-                {error}
-              </p>
-            )}
-
-            {/* EMAIL → OUTLINE */}
-
-            <Button
-              onClick={handleSendEmail}
-              disabled={isLoading}
-              variant="outline"
-              className="w-full rounded-full font-medium"
+          {/* Email Login Section */}
+          {!showEmailInput ? (
+            <button 
+              onClick={() => setShowEmailInput(true)}
+              className="w-full bg-white border border-gray-200 hover:border-[#E9B96E] text-gray-700 font-medium py-4 rounded-full transition-all active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer"
             >
-              {isLoading ? "Sending..." : "Continue with Email"}
-            </Button>
+              <Mail className="w-4 h-4 text-gray-500" />
+              <span className="text-sm">Continue with Email</span>
+            </button>
+          ) : (
+            <form onSubmit={handleEmailLogin} className="flex flex-col gap-3 animate-in slide-in-from-top-2 duration-300">
+              <input 
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-[#E9B96E]"
+                required
+              />
+              <button 
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white font-bold py-4 rounded-full transition-all active:scale-[0.98] flex items-center justify-center disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Send Magic Link"}
+              </button>
+              {message && <p className="text-[10px] text-green-600 text-center font-medium">{message}</p>}
+            </form>
+          )}
 
-          </div>
-
-          {/* FOOTER FIX */}
-
-          <button
-            onClick={handleClose}
-            className="text-sm text-muted-foreground hover:text-foreground text-center w-full"
+          {/* Skip Button */}
+          <button 
+            onClick={onClose}
+            className="w-full bg-transparent text-gray-400 hover:text-gray-600 text-xs py-2 mt-2 transition-colors border-none cursor-pointer"
           >
             Continue without signing
           </button>
-
         </div>
 
-      </DialogContent>
+        {/* Footer Info */}
+        <div className="mt-10 pt-6 border-t border-gray-100 w-full text-center px-4">
+          <p className="text-[10px] text-gray-400 leading-normal uppercase tracking-wider">
+            You can continue without signing in. <br/>
+            Signing in simply helps you return to your conversations anytime.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-    </Dialog>
-  )
-}
+export default AuthModal;
