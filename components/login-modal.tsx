@@ -50,13 +50,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       
       setStatusMessage({ 
         type: 'success', 
-        text: "An elegant sign-in pathway has been delivered to your inbox." 
+        text: "Success! Check your inbox for the login link." 
       });
     } catch (error: any) {
       console.error("KAAL Auth Protocol Exception:", error.message);
       setStatusMessage({ 
         type: 'error', 
-        text: error.message || "Failed to initiate pathway. Please verify your connection." 
+        text: error.message || "Login failed. Please verify your connection." 
       });
     } finally {
       setLoading(false);
@@ -66,15 +66,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className={`fixed inset-0 z-[200] flex items-center justify-center p-4 transition-all duration-500 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       
-      {/* Premium Obsidian Blur Overlay */}
+      {/* Background Overlay */}
       <div 
-        className="absolute inset-0 bg-[#0d0d11]/40 backdrop-blur-[12px] transition-all duration-500 ease-in-out" 
+        className="absolute inset-0 bg-black/10 backdrop-blur-[1px] transition-all duration-500 ease-in-out" 
         onClick={onClose}
       />
 
-      {/* Luxury Sculpted Container */}
+      {/* Modal Card */}
       <div 
-        className={`relative bg-[#faf9f6] w-full max-w-md rounded-[32px] p-8 md:p-10 shadow-[0_24px_64px_rgba(13,13,17,0.12)] border border-[#f0ede4] flex flex-col items-center transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) ${
+        className={`relative bg-white w-full max-w-md rounded-[32px] md:rounded-[40px] p-6 md:p-8 shadow-2xl flex flex-col items-center max-h-[calc(100dvh-2rem)] overflow-y-auto transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) ${
           isOpen ? 'scale-100 translate-y-0 opacity-100' : 'scale-95 translate-y-4 opacity-0'
         }`}
       >
@@ -82,65 +82,66 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         {/* Subtle Ambient Glow Effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-[1px] bg-gradient-to-r from-transparent via-[#E9B96E]/40 to-transparent" />
 
-        {/* Minimalist Close Interface */}
+        {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute right-6 top-6 text-[#9a9485] hover:text-[#1a191e] transition-all duration-300 bg-[#f3efe6]/50 hover:bg-[#f3efe6] p-2 rounded-full border-none cursor-pointer group active:scale-95"
+          className="absolute right-5 top-5 text-gray-400 hover:text-black transition-all duration-300 bg-transparent border-none cursor-pointer group active:scale-95 z-10"
           aria-label="Close authentication panel"
         >
-          <X className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" />
+          <X className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:rotate-90" />
         </button>
 
         {/* Logo Iconography Segment */}
-        <div className="w-12 h-12 rounded-full bg-white border border-[#eae5d8] flex items-center justify-center mb-6 mt-2 shadow-sm animate-pulse">
-          <Sparkles className="w-5 h-5 text-[#E9B96E]" />
+        <div className="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center mb-4 mt-2 shadow-sm shrink-0">
+          <Sparkles className="w-4 h-4 text-[#E9B96E]" />
         </div>
 
-        {/* Serif Typography Hierarchy */}
-        <h2 className="text-[22px] font-medium tracking-tight text-[#1a191e] mb-2 text-center font-serif px-2">
-          Preserve your journey with KAAL
+        {/* Title Content */}
+        <h2 className="text-xl md:text-2xl font-serif text-gray-800 mb-1.5 text-center px-2 shrink-0">
+          Save your journey with KAAL
         </h2>
-        <p className="text-xs text-[#847e70] text-center mb-8 max-w-[280px] leading-relaxed tracking-wide">
-          Safely archivate your unique emotional insights, cognitive reflections, and real-time dialogues.
+        <p className="text-xs md:text-sm text-gray-500 text-center mb-6 md:mb-8 leading-relaxed max-w-[320px] shrink-0">
+          Sign in to securely store your reflections and conversations.
         </p>
 
-        {/* Interactive Element Stack */}
-        <div className="w-full flex flex-col gap-3">
+        {/* Buttons Stack */}
+        <div className="w-full flex flex-col gap-3 md:gap-4 shrink-0">
           
-          {/* Authentic Native Header Passing Interface Blocks */}
+          {/* Google Button - Placeholder for UI */}
           <button 
             type="button"
-            className="w-full bg-[#f4f1e9] text-[#b4ae9f] font-medium h-[52px] rounded-full flex items-center justify-center gap-3 border-none cursor-not-allowed select-none transition-all"
+            className="w-full bg-[#E9B96E] opacity-70 cursor-not-allowed text-white font-bold py-3.5 md:py-4 rounded-full flex items-center justify-center gap-3 border-none shadow-sm select-none"
           >
-            <span className="text-xs font-sans tracking-wide uppercase font-semibold">Continue with Google</span>
+            <span className="text-xs md:text-sm">Continue with Google</span>
           </button>
 
+          {/* Phone Button - Placeholder for UI */}
           <button 
             type="button"
-            className="w-full bg-[#f4f1e9] text-[#b4ae9f] font-medium h-[52px] rounded-full flex items-center justify-center gap-3 border-none cursor-not-allowed select-none transition-all"
+            className="w-full bg-white border border-gray-200 text-gray-300 font-medium py-3.5 md:py-4 rounded-full flex items-center justify-center gap-3 cursor-not-allowed select-none"
           >
-            <Phone className="w-3.5 h-3.5 opacity-60" />
-            <span className="text-xs font-sans tracking-wide uppercase font-semibold">Continue with Phone</span>
+            <Phone className="w-4 h-4 text-gray-300" />
+            <span className="text-xs md:text-sm">Continue with Phone</span>
           </button>
 
-          {/* Luxury Procedural Transition Layout */}
+          {/* Email Login Section */}
           {!showEmailInput ? (
             <button 
               onClick={() => setShowEmailInput(true)}
-              className="w-full bg-[#1a191e] hover:bg-[#2b2a30] text-white font-medium h-[52px] rounded-full transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2.5 border-none cursor-pointer shadow-[0_4px_12px_rgba(26,25,30,0.15)] group"
+              className="w-full bg-white border border-gray-200 hover:border-[#E9B96E] text-gray-700 font-medium py-3.5 md:py-4 rounded-full transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer group"
             >
-              <Mail className="w-4 h-4 text-[#eae5d8] transition-transform group-hover:scale-110" />
-              <span className="text-xs font-sans tracking-wide uppercase font-semibold">Continue with Email</span>
+              <Mail className="w-4 h-4 text-gray-500 transition-transform group-hover:scale-110" />
+              <span className="text-xs md:text-sm">Continue with Email</span>
             </button>
           ) : (
-            <form onSubmit={handleEmailLogin} className="flex flex-col gap-2.5 w-full transition-all duration-500 ease-out animate-in slide-in-from-top-3">
+            <form onSubmit={handleEmailLogin} className="flex flex-col gap-3 w-full transition-all duration-500 ease-out animate-in slide-in-from-top-2">
               <div className="relative w-full">
                 <input 
                   type="email"
-                  placeholder="name@domain.com"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-[52px] px-6 bg-white border border-[#eae5d8] rounded-full text-xs text-[#1a191e] placeholder-[#a69f91] focus:outline-none focus:border-[#E9B96E] focus:ring-1 focus:ring-[#E9B96E] transition-all shadow-inner"
+                  className="w-full px-6 py-3.5 md:py-4 bg-gray-50 border border-gray-200 rounded-full text-xs md:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#E9B96E] transition-all"
                   required
                   disabled={loading}
                 />
@@ -148,22 +149,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#1a191e] hover:bg-[#2b2a30] text-white font-medium h-[52px] rounded-full transition-all duration-300 active:scale-[0.98] flex items-center justify-center disabled:opacity-50 cursor-pointer border-none shadow-[0_4px_12px_rgba(26,25,30,0.15)] group"
+                className="w-full bg-black text-white font-bold py-3.5 md:py-4 rounded-full transition-all duration-300 active:scale-[0.98] flex items-center justify-center disabled:opacity-50 cursor-pointer group"
               >
                 {loading ? (
-                  <Loader2 className="animate-spin w-4 h-4 text-white" />
+                  <Loader2 className="animate-spin w-5 h-5 text-white" />
                 ) : (
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-sans tracking-wide uppercase font-semibold">Request Pathway</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs md:text-sm">Send Magic Link</span>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </div>
                 )}
               </button>
               
               {/* Context Feedback System */}
               {statusMessage.text && (
-                <p className={`text-[11px] text-center mt-1 font-sans px-2 leading-relaxed animate-in fade-in duration-200 ${
-                  statusMessage.type === 'success' ? 'text-emerald-700' : 'text-rose-700'
+                <p className={`text-[10px] text-center mt-0.5 font-medium px-2 leading-relaxed animate-in fade-in duration-200 ${
+                  statusMessage.type === 'success' ? 'text-green-600' : 'text-rose-600'
                 }`}>
                   {statusMessage.text}
                 </p>
@@ -171,23 +172,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </form>
           )}
 
-          {/* Minimalist Skip Route */}
+          {/* Skip Button */}
           <button 
             onClick={onClose}
-            className="w-full bg-transparent text-[#9a9485] hover:text-[#1a191e] text-[11px] font-sans font-medium h-8 mt-1 transition-colors duration-200 border-none cursor-pointer"
+            className="w-full bg-transparent text-gray-400 hover:text-gray-600 text-xs py-1.5 mt-1 transition-colors duration-200 border-none cursor-pointer"
           >
-            Continue as Guest Experience
+            Continue without signing
           </button>
         </div>
 
-        {/* Premium Cryptographic Compliance Footer */}
-        <div className="mt-8 pt-5 border-t border-[#f0ede4] w-full text-center px-2">
-          <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#b4ae9f] uppercase tracking-wider font-semibold mb-1">
+        {/* Footer Info */}
+        <div className="mt-6 pt-5 border-t border-gray-100 w-full text-center px-4 shrink-0">
+          <div className="flex items-center justify-center gap-1.5 text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">
             <ShieldCheck className="w-3.5 h-3.5 text-[#E9B96E]" />
-            <span>End-to-End Encrypted Data</span>
+            <span>Secure Storage Access</span>
           </div>
-          <p className="text-[10px] text-[#9a9485] leading-normal font-sans max-w-[290px] mx-auto">
-            Signing in is optional. Unauthenticated users retain full spatial performance via localized sandboxed tokens.
+          <p className="text-[9px] md:text-[10px] text-gray-400 leading-normal uppercase tracking-wider max-w-[290px] mx-auto">
+            You can continue without signing in. <br/>
+            Signing in simply helps you return to your conversations anytime.
           </p>
         </div>
       </div>
